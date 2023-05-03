@@ -1,0 +1,33 @@
+
+DELIMITER //
+CREATE FUNCTION test(n INT)
+RETURNS VARCHAR(30)
+DETERMINISTIC
+BEGIN 
+DECLARE res VARCHAR(30);
+SET res = CONCAT(
+          FLOOR(TIME_FORMAT(SEC_TO_TIME(n), '%H') / 24), 'days ',
+          MOD(TIME_FORMAT(SEC_TO_TIME(n), '%H'), 24), 'h:',
+          TIME_FORMAT(SEC_TO_TIME(n), '%im:%ss')
+          );
+RETURN res;
+END//
+DELIMITER ;
+
+SELECT test(123456);
+
+DELIMITER $$
+CREATE PROCEDURE numbers()
+BEGIN
+DECLARE res VARCHAR(30) DEFAULT ' ';
+DECLARE n1 INT DEFAULT 2;
+DECLARE n2 INT DEFAULT 10;
+WHILE n1 <= n2 DO
+	SET res = CONCAT(res, ' ', n1);
+    SET n1 = n1 + 2;
+END WHILE;
+SELECT res;
+END $$
+DELIMITER ;
+
+CALL numbers();
